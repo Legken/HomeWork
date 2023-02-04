@@ -46,7 +46,8 @@ class Training:
 
     def get_spent_calories(self) -> float:
         """Got the number of calories consumed."""
-        pass
+        raise NotImplementedError(f'Переопределите метод get_spend_calories '
+                                  f'в {type(self).__name__}')
 
     def show_training_info(self) -> InfoMessage:
         """We return an informational message about the completed training."""
@@ -118,7 +119,7 @@ class Swimming(Training):
                 * self.weight * self.duration)
 
 
-def read_package(workout_type: str, data: list[float]) -> Training:
+def read_package(workout_type: str, data: list[int]) -> Training:
     """Read the data received from the sensors."""
     training_type: dict(str, Training) = {'SWM': Swimming,
                                           'RUN': Running,
