@@ -1,3 +1,6 @@
+import typing
+
+
 class InfoMessage:
     """Informational message about the training."""
     def __init__(self,
@@ -121,9 +124,9 @@ class Swimming(Training):
 
 def read_package(workout_type: str, data: list[int]) -> Training:
     """Read the data received from the sensors."""
-    training_type: dict(str, Training) = {'SWM': Swimming,
-                                          'RUN': Running,
-                                          'WLK': SportsWalking}
+    training_type: dict[str, typing.Type[Training]] = {'SWM': Swimming,
+                                                       'RUN': Running,
+                                                       'WLK': SportsWalking}
     if workout_type not in training_type.keys():
         raise ValueError('Unknown type of training.')
     return training_type[workout_type](*data)
