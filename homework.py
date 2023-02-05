@@ -49,8 +49,10 @@ class Training:
 
     def get_spent_calories(self) -> float:
         """Got the number of calories consumed."""
-        raise NotImplementedError(f'Переопределите метод get_spend_calories '
-                                  f'в {type(self).__name__}')
+        raise NotImplementedError(
+            f'Переопределите метод get_spend_calories '
+            f'в {type(self).__name__}'
+        )
 
     def show_training_info(self) -> InfoMessage:
         """We return an informational message about the completed training."""
