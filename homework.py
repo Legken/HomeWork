@@ -1,27 +1,26 @@
+from dataclasses import asdict, dataclass
+from typing import ClassVar
 import typing
 
 
+@dataclass
 class InfoMessage:
     """Informational message about the training."""
-    def __init__(self,
-                 training_type: str,
-                 duration: float,
-                 distance: float,
-                 speed: float,
-                 calories: float) -> None:
+    training_type: str
+    duration: float
+    distance: float
+    speed: float
+    calories: float
+    message: ClassVar[str] = (
+        'Тип тренировки: {training_type}; '
+        'Длительность:{duration: .3f} ч.; '
+        'Дистанция:{distance: .3f} км; '
+        'Ср. скорость:{speed: .3f} км/ч; '
+        'Потрачено ккал:{calories: .3f}.'
+    )
 
-        self.training_type = training_type
-        self.duration = duration
-        self.distance = distance
-        self.speed = speed
-        self.calories = calories
-
-    def get_message(self) -> str:
-        return (f'Тип тренировки: {self.training_type}; '
-                f'Длительность:{self.duration: .3f} ч.; '
-                f'Дистанция:{self.distance: .3f} км; '
-                f'Ср. скорость:{self.speed: .3f} км/ч; '
-                f'Потрачено ккал:{self.calories: .3f}.')
+    def get_message(self):
+        return self.message.format(**asdict(self))
 
 
 class Training:
@@ -30,11 +29,12 @@ class Training:
     M_IN_KM: int = 1000
     MIN_IN_H: int = 60
 
-    def __init__(self,
-                 action: int,
-                 duration: float,
-                 weight: float,
-                 ) -> None:
+    def __init__(
+        self,
+        action: int,
+        duration: float,
+        weight: float,
+    ) -> None:
         self.action = action
         self.duration = duration
         self.weight = weight
@@ -54,11 +54,13 @@ class Training:
 
     def show_training_info(self) -> InfoMessage:
         """We return an informational message about the completed training."""
-        return InfoMessage(self.__class__.__name__,
-                           self.duration,
-                           self.get_distance(),
-                           self.get_mean_speed(),
-                           self.get_spent_calories())
+        return InfoMessage(
+            type(self).__name__,
+            self.duration,
+            self.get_distance(),
+            self.get_mean_speed(),
+            self.get_spent_calories()
+        )
 
 
 class Running(Training):
@@ -80,11 +82,13 @@ class SportsWalking(Training):
     KM_IN_MS = 0.278
     SM_IN_M = 100
 
-    def __init__(self,
-                 action: int,
-                 duration: float,
-                 weight: float,
-                 height: float) -> None:
+    def __init__(
+        self,
+        action: int,
+        duration: float,
+        weight: float,
+        height: float
+    ) -> None:
         super().__init__(action, duration, weight)
         self.height = height
 
@@ -103,12 +107,14 @@ class Swimming(Training):
     COEF_3: float = 1.1
     COEF_4: int = 2
 
-    def __init__(self,
-                 action: int,
-                 duration: float,
-                 weight: float,
-                 length_pool: float,
-                 count_pool: float) -> None:
+    def __init__(
+        self,
+        action: int,
+        duration: float,
+        weight: float,
+        length_pool: float,
+        count_pool: float
+    ) -> None:
         super().__init__(action, duration, weight)
         self.length_pool = length_pool
         self.count_pool = count_pool
@@ -124,10 +130,12 @@ class Swimming(Training):
 
 def read_package(workout_type: str, data: typing.List[int]) -> Training:
     """Read the data received from the sensors."""
-    training_type: dict[str, typing.Type[Training]] = {'SWM': Swimming,
-                                                       'RUN': Running,
-                                                       'WLK': SportsWalking}
-    if workout_type not in training_type.keys():
+    training_type: dict[str, typing.Type[Training]] = {
+        'SWM': Swimming,
+        'RUN': Running,
+        'WLK': SportsWalking
+    }
+    if workout_type not in training_type:
         raise ValueError('Unknown type of training.')
     return training_type[workout_type](*data)
 
